@@ -1,0 +1,14 @@
+const router = require('express').Router();
+const { body } = require('express-validator');
+const controller = require('../controllers/communityController');
+const { protect } = require('../middleware/auth');
+const validate = require('../middleware/validate');
+router.get('/reviews', controller.reviews);
+router.use(protect);
+router.get('/favourites', controller.listFavourites);
+router.post('/favourites', [body('itemType').isIn(['destination','hotel','restaurant','attraction']), body('itemId').isInt({ min: 1 })], validate, controller.addFavourite);
+router.delete('/favourites/:type/:id', controller.removeFavourite);
+router.post('/reviews', [body('itemType').isIn(['destination','hotel','restaurant','attraction','trip']), body('itemId').isInt({ min: 1 }), body('rating').isInt({ min: 1, max: 5 }), body('comment').trim().isLength({ min: 5, max: 3000 })], validate, controller.addReview);
+router.get('/bookings', controller.bookings);
+router.post('/bookings', [body('bookingType').isIn(['hotel','restaurant','transportation','attraction','package','other']), body('bookingDate').isISO8601(), body('amount').optional().isFloat({ min: 0 }), body('currency').optional().isLength({ min: 3, max: 3 })], validate, controller.addBooking);
+module.exports = router;

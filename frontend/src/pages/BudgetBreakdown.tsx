@@ -1,0 +1,1 @@
+import{Link}from'react-router-dom';export default function BudgetBreakdown(){return <div className="card empty"><h1>Budget breakdown</h1><p>Generate an itinerary to see accommodation, food, attraction, transport, contingency, per-person and per-day totals.</p><Link className="btn" to="/plan-trip">Generate plan</Link></div>}

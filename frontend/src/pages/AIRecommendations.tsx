@@ -1,0 +1,1 @@
+import{Link}from'react-router-dom';export default function AIRecommendations(){return <div className="card empty"><h1>AI recommendations</h1><p>Recommendations are generated inside the planning wizard from database-shortlisted records.</p><Link className="btn" to="/plan-trip">Open wizard</Link></div>}

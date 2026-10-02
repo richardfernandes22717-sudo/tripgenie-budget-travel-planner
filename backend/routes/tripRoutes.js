@@ -1,0 +1,15 @@
+const router = require('express').Router();
+const { body } = require('express-validator');
+const controller = require('../controllers/tripController');
+const { protect } = require('../middleware/auth');
+const validate = require('../middleware/validate');
+router.use(protect);
+router.get('/', controller.list);
+router.post('/', [body('title').trim().isLength({ min: 2, max: 180 }), body('origin').trim().notEmpty(), body('destination.id').isInt({ min: 1 }), body('startDate').isISO8601(), body('endDate').isISO8601(), body('travellers').isInt({ min: 1, max: 30 }), body('budget.total').isFloat({ min: 0 }), body('itinerary').isArray({ min: 1 })], validate, controller.save);
+router.get('/:id', controller.detail);
+router.put('/:id', [body('title').optional().trim().isLength({ min: 2, max: 180 }), body('start_date').optional().isISO8601(), body('end_date').optional().isISO8601(), body('traveller_count').optional().isInt({ min: 1, max: 30 }), body('status').optional().isIn(['draft','planned','completed','cancelled'])], validate, controller.update);
+router.put('/:id/hotel', [body('hotelId').isInt({ min: 1 })], validate, controller.replaceHotel);
+router.put('/:id/items/:itemId', [body('start_time').optional().matches(/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/), body('end_time').optional().matches(/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/), body('estimated_cost').optional().isFloat({ min: 0 }), body('travel_minutes').optional().isInt({ min: 0, max: 1440 })], validate, controller.editItem);
+router.put('/:id/items/:itemId/replace', [body('recordId').isInt({ min: 1 })], validate, controller.replaceItem);
+router.delete('/:id', controller.remove);
+module.exports = router;
